@@ -4,17 +4,56 @@ import config from 'config'
 export const module = {
   namespaced: true,
   state: {
-    weather: []
+    weather: {}
   },
   mutations: {
     [types.CURRENT] (state, payload) {
-      state.weather = payload
+      state.weather = payload.current
     },
     [types.FORECAST] (state, payload) {
-      state.weather = payload
+      payload.forecast.forecastday.forEach(day => {
+        var rain = 0;
+        var snow = 0;
+        var minWind = day.hour[0].wind_kph;
+
+        day.hour.forEach(hour => {
+          if (hour.chance_of_rain > rain) {
+            rain = hour.chance_of_rain;
+          }
+          if (hour.chance_of_snow > snow) {
+            snow = hour.chance_of_snow;
+          }
+          if (hour.wind_kph < minWind) {
+            minWind = hour.wind_kph;
+          }
+        });
+
+        day.rain = rain;
+        day.snow = snow;
+        day.minWind = minWind;
+      });
+
+      state.weather = payload.forecast;
     },
     [types.DAY] (state, payload) {
-      state.weather = payload
+      payload.forecast.forecastday.forEach(day => {
+        var rain = 0;
+        var snow = 0;
+
+        day.hour.forEach(hour => {
+          if (hour.chance_of_rain > rain) {
+            rain = hour.chance_of_rain;
+          }
+          if (hour.chance_of_snow > snow) {
+            snow = hour.chance_of_snow;
+          }
+        });
+
+        day.rain = rain;
+        day.snow = snow;
+      });
+
+      state.weather = payload.forecast;
     }
   },
   actions: {
@@ -41,11 +80,12 @@ export const module = {
           return res.json()
         })
         .then(res => {
-          commit(types.CURRENT, res.result)
+          commit(payload.type, res.result)
         })
     }
   },
   getters: {
-    weather: state => state.weather
+    weather: state => state.weather,
+    temp: state => state.temp
   }
 }

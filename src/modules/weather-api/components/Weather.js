@@ -1,3 +1,4 @@
+import { mapState } from 'vuex';
 export default {
   name: 'Weather',
   data () {
@@ -13,7 +14,7 @@ export default {
     }
   },
   beforeMount () {
-    this.$store.dispatch('weather-api/get', { type: 'CURRENT' });
+    this.$store.dispatch('weather-api/get', { type: this.forecastType });
   },
   watch: {
     forecastType (newVal) {
@@ -27,26 +28,23 @@ export default {
     },
     date (newVal) {
       if (this.forecastType === 'DAY') {
-        this.$store.dispatch('weather-api/get', { type: this.forecastType, date: newVal });
+        if (this.isValidDate) {
+          this.$store.dispatch('weather-api/get', { type: this.forecastType, date: newVal });
+        }
       }
     }
   },
   methods: {
     validateDate () {
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-      const currentDate = new Date();
       const inputDate = new Date(this.date);
 
-      const maxAllowedDate = new Date(currentDate);
-      maxAllowedDate.setDate(currentDate.getDate() + 300);
+      const maxAllowedDate = new Date();
+      maxAllowedDate.setDate(maxAllowedDate.getDate() + 300);
 
-      const minAllowedDate = new Date(currentDate);
-      minAllowedDate.setDate(currentDate.getDate() + 14);
+      const minAllowedDate = new Date();
+      minAllowedDate.setDate(minAllowedDate.getDate() + 14);
 
       if (
-        !dateRegex.test(this.date) ||
-        isNaN(inputDate.getTime()) ||
-        inputDate <= currentDate ||
         inputDate > maxAllowedDate ||
         inputDate < minAllowedDate
       ) {
