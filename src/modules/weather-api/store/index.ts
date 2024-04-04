@@ -1,6 +1,32 @@
 import * as types from './mutation-types'
 import config from 'config'
 
+function processForecast (state, payload) {
+  payload.forecast.forecastday.forEach(day => {
+    var rain = 0;
+    var snow = 0;
+    var minWind = day.hour[0].wind_kph;
+
+    day.hour.forEach(hour => {
+      if (hour.chance_of_rain > rain) {
+        rain = hour.chance_of_rain;
+      }
+      if (hour.chance_of_snow > snow) {
+        snow = hour.chance_of_snow;
+      }
+      if (hour.wind_kph < minWind) {
+        minWind = hour.wind_kph;
+      }
+    });
+
+    day.rain = rain;
+    day.snow = snow;
+    day.minWind = minWind;
+  });
+
+  state.weather = payload.forecast;
+}
+
 export const module = {
   namespaced: true,
   state: {
@@ -11,49 +37,10 @@ export const module = {
       state.weather = payload.current
     },
     [types.FORECAST] (state, payload) {
-      payload.forecast.forecastday.forEach(day => {
-        var rain = 0;
-        var snow = 0;
-        var minWind = day.hour[0].wind_kph;
-
-        day.hour.forEach(hour => {
-          if (hour.chance_of_rain > rain) {
-            rain = hour.chance_of_rain;
-          }
-          if (hour.chance_of_snow > snow) {
-            snow = hour.chance_of_snow;
-          }
-          if (hour.wind_kph < minWind) {
-            minWind = hour.wind_kph;
-          }
-        });
-
-        day.rain = rain;
-        day.snow = snow;
-        day.minWind = minWind;
-      });
-
-      state.weather = payload.forecast;
+      processForecast(state, payload);
     },
     [types.DAY] (state, payload) {
-      payload.forecast.forecastday.forEach(day => {
-        var rain = 0;
-        var snow = 0;
-
-        day.hour.forEach(hour => {
-          if (hour.chance_of_rain > rain) {
-            rain = hour.chance_of_rain;
-          }
-          if (hour.chance_of_snow > snow) {
-            snow = hour.chance_of_snow;
-          }
-        });
-
-        day.rain = rain;
-        day.snow = snow;
-      });
-
-      state.weather = payload.forecast;
+      processForecast(state, payload);
     }
   },
   actions: {
