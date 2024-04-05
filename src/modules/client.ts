@@ -16,6 +16,7 @@ import { PaymentBackendMethodsModule } from './payment-backend-methods'
 import { PaymentCashOnDeliveryModule } from './payment-cash-on-delivery'
 import { NewsletterModule } from '@vue-storefront/core/modules/newsletter'
 import { InitialResourcesModule } from '@vue-storefront/core/modules/initial-resources'
+import { Weather } from '../modules/weather-api'
 
 // import { DeviceModule } from './device/index';
 import { registerModule } from '@vue-storefront/core/lib/modules'
@@ -44,5 +45,5 @@ export function registerClientModules () {
 
 // Deprecated API, will be removed in 2.0
 export const registerModules: VueStorefrontModule[] = [
-  // Example
+  Weather
 ]

@@ -1,3 +1,5 @@
+
+const Weather = () => import(/* webpackChunkName: "vsf-learning" */ 'theme/pages/Weather.vue')
 const Learning = () => import(/* webpackChunkName: "vsf-learning" */ 'theme/pages/Learning.vue')
 const Home = () => import(/* webpackChunkName: "vsf-home" */ 'theme/pages/Home.vue')
 const PageNotFound = () => import(/* webpackChunkName: "vsf-not-found" */ 'theme/pages/PageNotFound.vue')
@@ -47,6 +49,7 @@ let routes = [
   { name: 'cms-page', path: '/i/:slug', component: CmsPage },
   { name: 'create-password', path: '/create-password', component: ResetPassword },
   { name: 'learning', path: '/learning', component: Learning },
+  { name: 'weather', path: '/weather', component: Weather },
   { name: 'page-not-found', path: '*', component: PageNotFound }
 ]
 
